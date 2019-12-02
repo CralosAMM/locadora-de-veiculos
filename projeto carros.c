@@ -45,12 +45,37 @@ void GetVeiculo(struct veiculo *cls){
     scanf("%f",&cls->passageiros);
     return 0;
 }
+
+typedef struct funcionario{
+    char nome[100];
+    char endereco[100];
+    float telefone;
+    float cpf;
+	char cargo;
+    float registro;
+};
+
+void GetFuncionario(struct funcionario *cls){
+	printf("| Digite o Nome do funcionario: ");
+	scanf("%s",&cls->nome);
+	printf("| Digite o Endereco do funcionario: ");
+    scanf("%s",&cls->endereco);
+    printf("| Digite o Telefone do funcionario: ");
+    scanf("%f",&cls->telefone);
+    printf("| Digite o CPF do funcionario: ");
+    scanf("%f",&cls->cpf);
+    printf("| Digite o cargo do funcionario: ");
+    scanf("%s",&cls->cargo);
+    printf("| Digite o numero de registro do funcionario: ");
+    scanf("%f",&cls->registro);
+	return 0;
+}
 int main(){
 	
 int opcao;
 struct cliente cl;
 struct veiculo vl;
-
+struct funcionario fun;
 
 	do{
 		
@@ -100,14 +125,14 @@ struct veiculo vl;
                         printf("| Digite o CPF do cliente: ");
                         scanf ("%d",&buscaCli);
 						//system("CLS");
-						FILE *arq_cliente;    //PONTEIRO PARA ARQUIVO
-						arq_cliente = fopen("cliente.txt", "r");
-						while(fscanf(arq_cliente,"%s %s %f %f", cl.nome,cl.endereco,&cl.telefone,&cl.cpf)!= EOF){
+						FILE *cliente;    //PONTEIRO PARA ARQUIVO
+						cliente = fopen("cliente.txt", "r");
+						while(fscanf(cliente,"%s %s %f %f", cl.nome,cl.endereco,&cl.telefone,&cl.cpf)!= EOF){
                             if(buscaCli == cl.cpf){
                                     printf("Nome: %s\nEndereco: %s\nTelefone: %.0f\nCPF: %.0f\n",cl.nome,cl.endereco,cl.telefone,cl.cpf);
                             }
 						}
-						fclose(arq_cliente);
+						fclose(cliente);
 						system("pause");
 						system("cls");
                     }
@@ -116,17 +141,17 @@ struct veiculo vl;
                         printf("|-------------------------------|\n");
                         printf("|  2  |       CADASTRAR         |\n");
                         printf("|-------------------------------|\n");
-                        FILE *arq_cliente;    //PONTEIRO PARA ARQUIVO
-                        arq_cliente = fopen("cliente.txt", "a");
-                        if(arq_cliente ==  NULL){
+                        FILE *cliente;    //PONTEIRO PARA ARQUIVO
+                        cliente = fopen("cliente.txt", "a");
+                        if(cliente ==  NULL){
                             printf("Erro na abertura do arquivo!");
                             system("pause");
                             return ;
                         }
                         
                         GetCliente(&cl);
-                        fprintf(arq_cliente,"%s %s %.0f %.0f\n",cl.nome,cl.endereco,cl.telefone,cl.cpf);
-                        fclose(arq_cliente);
+                        fprintf(cliente,"%s %s %.0f %.0f\n",cl.nome,cl.endereco,cl.telefone,cl.cpf);
+                        fclose(cliente);
                         printf("Cliente Cadastrado com Sucesso\n");
                         system("pause");
                         system("cls");
@@ -139,20 +164,20 @@ struct veiculo vl;
                         printf("|-------------------------------|\n");
                         printf("| Digite o CPF do cliente para excluir: ");
                         scanf ("%d",&excluirCPF);// LER O QUE SERA EXCLUIDO DO ARQUIVO
-                        FILE *temp, *arq_cliente; //  ARQUIVO TEMPORARIO
-						if((arq_cliente = fopen("cliente.txt", "r+")) == NULL);// ABRIR ARQUIVO CLIENTE EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "R+"							
-						while(fscanf(arq_cliente,"%s %s %f %f", cl.nome,cl.endereco,&cl.telefone,&cl.cpf) != EOF){//LACO PARA LER TODAS AS LINHAS DO ARQUIVO                            
-						if((temp = fopen("temp.txt","w+")) == NULL);// ABRIR ARQUIVO TEMPORARIO EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "W+" SE ARQUIVO JA EXISTE, SERA APAGADO E CRIADDO UM NOVO
+                        FILE *tcli, *cliente; //  ARQUIVO TEMPORARIO
+						if((cliente = fopen("cliente.txt", "r+")) == NULL);// ABRIR ARQUIVO CLIENTE EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "R+"							
+						while(fscanf(cliente,"%s %s %f %f", cl.nome,cl.endereco,&cl.telefone,&cl.cpf) != EOF){//LACO PARA LER TODAS AS LINHAS DO ARQUIVO                            
+						if((tcli = fopen("tcli.txt","w+")) == NULL);// ABRIR ARQUIVO TEMPORARIO EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "W+" SE ARQUIVO JA EXISTE, SERA APAGADO E CRIADDO UM NOVO
                         
 								if (excluirCPF != cl.cpf){// SELECIONE TODOS EXETO CPF
-                                	fprintf(temp,"%s %s %.0f %.0f\n", cl.nome,cl.endereco,cl.telefone,cl.cpf); // SE SIM PRINTA CLIENTE ATUAL NO ARQUIVO TEMPORARIO
+                                	fprintf(tcli,"%s %s %.0f %.0f\n", cl.nome,cl.endereco,cl.telefone,cl.cpf); // SE SIM PRINTA CLIENTE ATUAL NO ARQUIVO TEMPORARIO
                             }
                         }
                         printf("Excluido com Sucesso\n");
-                        fclose(arq_cliente);
-                        fclose(temp);
+                        fclose(cliente);
+                        fclose(tcli);
                         remove("cliente.txt");
-                        rename("temp.txt", "cliente.txt");
+                        rename("tcli.txt", "cliente.txt");
                         system("pause");
 						system("cls");
 						break;
@@ -184,14 +209,14 @@ struct veiculo vl;
                         printf("| Digite a placa do veiculo: ");
                         scanf ("%d",&buscaVei);
 						//system("CLS");
-						FILE *arq_veiculo;    //PONTEIRO PARA ARQUIVO
+						FILE *veiculo;    //PONTEIRO PARA ARQUIVO
 						arq_veiculo = fopen("veiculo.txt", "r");
-						while(fscanf(arq_veiculo,"%s %s %s %f %f %f", vl.modelo,vl.cor,vl.placa,&vl.chassi,&vl.ano, &vl.passageiros)!= EOF){
+						while(fscanf(veiculo,"%s %s %s %f %f %f", vl.modelo,vl.cor,vl.placa,&vl.chassi,&vl.ano, &vl.passageiros)!= EOF){
                             if(buscaVei == vl.chassi){
                                     printf("Modelo: %s\nCor: %s\nPlaca: %s\nChassi: %.0f\nAno: %.0f\nPasageiros: %.0f\n",vl.modelo,vl.cor,vl.placa,vl.chassi, vl.ano, vl.passageiros);
                             }
 						}
-						fclose(arq_veiculo);
+						fclose(veiculo);
 						system("pause");
 						system("cls");
                     }
@@ -202,15 +227,15 @@ struct veiculo vl;
                         printf("|-------------------------------|\n");
                         FILE *arq_veiculo;    //PONTEIRO PARA ARQUIVO
                         arq_veiculo = fopen("veiculo.txt", "a");
-                        if(arq_veiculo ==  NULL){
+                        if(veiculo ==  NULL){
                             printf("Erro na abertura do arquivo!");
                             system("pause");
                             return ;
                         }
                         
                         GetVeiculo(&vl);
-                        fprintf(arq_veiculo,"%s %s %s %.0f %.0f %.0f\n",vl.modelo,vl.cor,vl.placa,vl.chassi, vl.ano, vl.passageiros);
-                        fclose(arq_veiculo);
+                        fprintf(veiculo,"%s %s %s %.0f %.0f %.0f\n",vl.modelo,vl.cor,vl.placa,vl.chassi, vl.ano, vl.passageiros);
+                        fclose(veiculo);
                         printf("Veiculo Cadastrado com Sucesso\n");
                         system("pause");
                         system("cls");
@@ -224,25 +249,110 @@ struct veiculo vl;
                         printf("|-------------------------------|\n");
                         printf("| Digite o chassi do veiculo para excluir: ");
                         scanf ("%d",&excluirChassi);// LER O QUE SERA EXCLUIDO DO ARQUIVO
-                        FILE *temp, *arq_veiculo; //  ARQUIVO TEMPORARIO
-						if((arq_veiculo = fopen("veiculo.txt", "r+")) == NULL);// ABRIR ARQUIVO CLIENTE EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "R+"
-						if((temp = fopen("temp.txt","w+")) == NULL);// ABRIR ARQUIVO TEMPORARIO EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "W+" SE ARQUIVO JA EXISTE, SERA APAGADO E CRIADDO UM NOVO
-                        while(fscanf(arq_veiculo,"%s %s %s %f %f %f", vl.modelo,vl.cor,vl.placa,&vl.chassi,&vl.ano, &vl.passageiros) != EOF){//LACO PARA LER TODAS AS LINHAS DO ARQUIVO
+                        FILE *tveic, *veiculo; //  ARQUIVO TEMPORARIO
+						if((veiculo = fopen("veiculo.txt", "r+")) == NULL);// ABRIR ARQUIVO CLIENTE EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "R+"
+						if((tveic = fopen("temp.txt","w+")) == NULL);// ABRIR ARQUIVO TEMPORARIO EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "W+" SE ARQUIVO JA EXISTE, SERA APAGADO E CRIADDO UM NOVO
+                        while(fscanf(veiculo,"%s %s %s %f %f %f", vl.modelo,vl.cor,vl.placa,&vl.chassi,&vl.ano, &vl.passageiros) != EOF){//LACO PARA LER TODAS AS LINHAS DO ARQUIVO
                             if (excluirChassi != vl.chassi){// COMPARAR SE CLIENTE A SER EXCLUIDO FOR DIFERENTE  DA LINHA ATUAL
-                                fprintf(temp,"%s %s %s %.0f %.0f %.0f\n",vl.modelo,vl.cor,vl.placa,vl.chassi, vl.ano, vl.passageiros); // SE SIM PRINTA CLIENTE ATUAL NO ARQUIVO TEMPORARIO
+                                fprintf(tveic,"%s %s %s %.0f %.0f %.0f\n",vl.modelo,vl.cor,vl.placa,vl.chassi, vl.ano, vl.passageiros); // SE SIM PRINTA CLIENTE ATUAL NO ARQUIVO TEMPORARIO
                             }
                         }
                         printf("Excluido com Sucesso\n");
-                        fclose(arq_veiculo);
-                        fclose(temp);
+                        fclose(veiculo);
+                        fclose(tveic);
                         remove("veiculo.txt");
-                        rename("temp.txt", "veiculo.txt");
+                        rename("tveic.txt", "veiculo.txt");
                         system("pause");
 						system("cls");
 						break;
                     }
 				}
 			}
+			break;
+			case 5:{
+                int opfun;
+                printf("|-------------------------------|\n");
+				printf("|           FUNCIONARIOS        |\n");
+				printf("|-------------------------------|\n");
+				printf("|-------------------------------|\n");
+				printf("|  1  |       CONSULTA          |\n");
+				printf("|-------------------------------|\n");
+				printf("|  2  |       CADASTRAR         |\n");
+				printf("|-------------------------------|\n");
+				printf("|  3  |        EXCLUIR          |\n");
+				printf("|-------------------------------|\n");
+				printf("| Escolha uma opcao: ");
+				scanf("%d",&opfun);
+				system("cls");
+				switch(opfun){
+                    case 1:{
+                        int buscaFun;
+                        printf("|-------------------------------|\n");
+                        printf("|            CONSULTA           |\n");
+                        printf("|-------------------------------|\n");
+                        printf("| Digite o CPF do cliente: ");
+                        scanf ("%d",&buscaFun);
+						//system("CLS");
+						FILE *funcionario;    //PONTEIRO PARA ARQUIVO
+						funcionario = fopen("funcionario.txt", "r");
+						while(fscanf("%s %s %.0f %.0f %s %.0f\n", fun.nome,fun.endereco,&fun.telefone,&fun.cpf,fun.cargo,&fun.registro)!= EOF){
+                            if(buscaFun == fun.cpf){
+                                    printf("Nome: %s\nEndereco: %s\nTelefone: %.0f\nCPF: %.0f\nCargo: %s\nRegistro: %.0f",fun.nome,fun.endereco,fun.telefone,fun.cpf,fun.cargo,fun.registro);
+                            }
+						}
+						fclose(funcionario);
+						system("pause");
+						system("cls");
+                    }
+                    break;
+					case 2:{
+                        printf("|-------------------------------|\n");
+                        printf("|  2  |       CADASTRAR         |\n");
+                        printf("|-------------------------------|\n");
+                        FILE *funcionario;    //PONTEIRO PARA ARQUIVO
+                        funcionario = fopen("funcionario.txt", "a");
+                        if(funcionario ==  NULL){
+                            printf("Erro na abertura do arquivo!");
+                            system("pause");
+                            return ;
+                        }
+                        
+                        GetFuncionario(&fun);
+                        fprintf(funcionario,"%s %s %.0f %.0f %s %.0f\n", fun.nome,fun.endereco,fun.telefone,fun.cpf,fun.cargo,fun.registro);
+                        fclose(funcionario);
+                        printf("Funcionario Cadastrado com Sucesso\n");
+                        system("pause");
+                        system("cls");
+                        break;
+                    }
+					case 3:{    //  CASO ESCOLHA 3 ABRE EXCLUIR
+                        int excluirREG;
+                        printf("|-------------------------------|\n");
+                        printf("|            EXCLUIR            |\n");
+                        printf("|-------------------------------|\n");
+                        printf("| Digite o registro do funcionario para excluir: ");
+                        scanf ("%d",&excluirREG);// LER O QUE SERA EXCLUIDO DO ARQUIVO
+                        FILE *tfun, *funcionario; //  ARQUIVO TEMPORARIO
+						if((funcionario = fopen("funcionario.txt", "r+")) == NULL);// ABRIR ARQUIVO CLIENTE EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "R+"							
+						while(fscanf(funcionario,"%s %s %f %f %s %f", fun.nome,fun.endereco,&fun.telefone,&fun.cpf,fun.cargo,&fun.registro) != EOF){//LACO PARA LER TODAS AS LINHAS DO ARQUIVO                            
+						if((tfun = fopen("tfun.txt","w+")) == NULL);// ABRIR ARQUIVO TEMPORARIO EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "W+" SE ARQUIVO JA EXISTE, SERA APAGADO E CRIADDO UM NOVO
+                        
+								if (excluirREG != cl.cpf){// SELECIONE TODOS EXETO CPF
+                                	fprintf(tfun,"%s %s %.0f %.0f %s %.0f\n", fun.nome,fun.endereco,fun.telefone,fun.cpf,fun.cargo,fun.registro); // SE SIM PRINTA CLIENTE ATUAL NO ARQUIVO TEMPORARIO
+                            }
+                        }
+                        printf("Excluido com Sucesso\n");
+                        fclose(funcionario);
+                        fclose(tfun);
+                        remove("funcionario.txt");
+                        rename("tfun.txt", "funcionario.txt");
+                        system("pause");
+						system("cls");
+						break;
+                    }
+				}
+			}
+			break;
 			
 		}
 	}while(opcao!=4);
