@@ -109,11 +109,13 @@ typedef struct locacao{
     float dias;
     float valor;
     float cod;
-    union{
+    float cpf;
+    float chassi;
+   /* union{
 	   	struct cliente cl;
 	   	struct funcionario fun;
 	   	struct veiculo vl;
-	   };
+	   };  */
 };
 
 void GetLocacao(struct locacao *cls){
@@ -124,9 +126,9 @@ void GetLocacao(struct locacao *cls){
 	printf("| Digite o valor: ");
 	scanf("%f",&cls->valor);
 	printf("| Digite o cpf do cliente: ");
-	scanf("%f",&cls->cl.cpf);
+	scanf("%f",&cls->cpf);
 	printf("| Digite o chassi do veiculo: ");
-	scanf("%f",&cls->vl.chassi);
+	scanf("%f",&cls->chassi);
     return 0;
 } 
 
@@ -469,18 +471,19 @@ Locacao GetLocacao(){
 				system("cls");
 				switch(oploc){
                     case 1:{
-                        int buscaLoc;
+                        float buscaLoc;
+                        char lixo[10];
                         printf("|-------------------------------|\n");
                         printf("|            CONSULTA           |\n");
                         printf("|-------------------------------|\n");
                         printf("| Digite o numero de registro da locacao: ");
-                        scanf ("%d",&buscaLoc);
+                        scanf("%f",&buscaLoc);
 						//system("CLS");
 						FILE *locacao;    //PONTEIRO PARA ARQUIVO
 						locacao = fopen("locacao.txt", "r");
-							while(fscanf(locacao,"%f %f %d %d %d", &loc.cod,&loc.dias,&loc.valor,&loc.cl.cpf,&loc.vl.chassi)!= EOF){
-                            if(buscaLoc == loc.vl.chassi){
-                                    printf("%.0f %f.0 %.0f %.0f %.0f", loc.cod,loc.dias,loc.valor,loc.cl.cpf,loc.vl.chassi);
+							while(fscanf(locacao,"%s %f %s %f %s %f %s %f %s %f\n",&lixo, &loc.cod, &lixo, &loc.dias, &lixo, &loc.valor, &lixo, &loc.cpf, &lixo, &loc.chassi)!= EOF){
+                            if(buscaLoc == loc.cod){
+                                    printf("%.0f %.0f %.0f %.0f %.0f", loc.cod,loc.dias,loc.valor,loc.cpf,loc.chassi);
                             }
                    		}
 						fclose(locacao);
@@ -491,8 +494,7 @@ Locacao GetLocacao(){
 					case 2:{
                         printf("|-------------------------------|\n");
                         printf("|  2  |       CADASTRAR         |\n");
-                        printf("|-------------------------------|\n");
-                    
+                        printf("|-------------------------------|\n");                    
                         /*	FILE *locacao;    //PONTEIRO PARA ARQUIVO
                         		locacao = fopen("locacao.txt", "a");
                        		 if(locacao ==  NULL){	
@@ -567,7 +569,7 @@ Locacao GetLocacao(){
                         }
                         */
                         GetLocacao(&loc);
-                        fprintf(locacao, "codigoLoc: %.0f dias: %.0f valor: %.0f clienteCPF: %.0f veiculo: %.0f\n", loc.cod,loc.dias,loc.valor*loc.dias,loc.cl.cpf, loc.vl.chassi);
+                        fprintf(locacao, "codigoLoc: %.0f dias: %.0f valor: %.0f clienteCPF: %.0f veiculo: %.0f\n", loc.cod,loc.dias,loc.valor*loc.dias,loc.cpf, loc.chassi);
 						//fprintf(locacao,"%.0f %.0f %s %.0f %s %s %s %.0f %.0f %s %.0f %.0f\n", loc.codloc.dias,loc.nome,loc.cpf,loc.modelo,loc.cor,loc.placa,loc.chassi,loc.passageiros,loc.nomef,loc.telefone,loc.registro);
                         fclose(cliente);
                         fclose(veiculo);
@@ -579,18 +581,19 @@ Locacao GetLocacao(){
                         break;  
                     }
 					case 3:{    //  CASO ESCOLHA 3 ABRE EXCLUIR
-                        int excluirloc;
+                        float excluirloc;
+                        char lixo[10];
                         printf("|-------------------------------|\n");
                         printf("|            EXCLUIR            |\n");
                         printf("|-------------------------------|\n");
                         printf("| Digite o registro de locacao para excluir: ");
-                        scanf ("%d",&excluirloc);// LER O QUE SERA EXCLUIDO DO ARQUIVO
+                        scanf ("%f",&excluirloc);// LER O QUE SERA EXCLUIDO DO ARQUIVO
                         FILE *tloc, *locacao; //  ARQUIVO TEMPORARIO
 						if((locacao = fopen("locacao.txt", "r+")) == NULL);// ABRIR ARQUIVO CLIENTE EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "R+"							
 						if((tloc = fopen("tloc.txt","w+")) == NULL);// ABRIR ARQUIVO TEMPORARIO EM MODO ATUALIZACAO PARA LEITURA E/OU GRAVACAO "W+" SE ARQUIVO JA EXISTE, SERA APAGADO E CRIADDO UM NOVO
-                        while(fscanf(locacao,"%f %f %f %f %f\n", &loc.cod, &loc.dias,&loc.valor,&loc.cl.cpf, &loc.vl.chassi) != EOF){//LACO PARA LER TODAS AS LINHAS DO ARQUIVO                            
+                        while(fscanf(locacao,"%s %f %s %f %s %f %s %f %s %f\n", &lixo, &loc.cod, &lixo, &loc.dias, &lixo, &loc.valor, &lixo, &loc.cpf, &lixo, &loc.chassi) != EOF){//LACO PARA LER TODAS AS LINHAS DO ARQUIVO                            
 								if (excluirloc != loc.cod){// SELECIONE TODOS EXETO CPF
-                                	fprintf(tloc,"%.0f %.0f %.0f %.0f %.0f\n", loc.cod, loc.dias,loc.valor,loc.cl.cpf, loc.vl.chassi); // SE SIM PRINTA CLIENTE ATUAL NO ARQUIVO TEMPORARIO
+                                	fprintf(tloc,"%.0f %.0f %.0f %.0f %.0f\n", loc.cod, loc.dias,loc.valor,loc.cpf, loc.chassi); // SE SIM PRINTA CLIENTE ATUAL NO ARQUIVO TEMPORARIO
                             }
                         }
                         printf("Excluido com Sucesso\n");
